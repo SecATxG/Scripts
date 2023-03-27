@@ -1,57 +1,67 @@
 Connect-MgGraph -Scopes "DeviceManagementApps.ReadWrite.All","DeviceManagementConfiguration.ReadWrite.All","DeviceManagementManagedDevices.ReadWrite.All","DeviceManagementServiceConfig.ReadWrite.All","Directory.ReadWrite.All","User.ReadWrite.All","Directory.Read.All","Domain.Read.All","Domain.ReadWrite.All","Group.ReadWrite.All","EntitlementManagement.ReadWrite.All","RoleManagement.ReadWrite.Directory"
 
+# Create Security Group for Emergency BreakGlass Accounts
+$SecureGroupName1 = "Emergency BreakGlass"
+$SecureGroupMailName1 = "EmergencyBreakGlass"
+$SecureGroup1 = New-MgGroup `
+   -Description "$($SecureGroupName1)" `
+   -DisplayName "$($SecureGroupName1)" `
+   -MailEnabled:$False `
+   -SecurityEnabled `
+   -MailNickname "$($SecureGroupMailName1)"
+
 $PasswordProfile = @{
-  Password = 'abcd.3434'
+  Password = 'abcd.1234'
   ForceChangePasswordNextSignIn = $true
   ForceChangePasswordNextSignInWithMfa = $true
 }
 
-# Create Break Glass User 3
+# Create Break Glass User 1
 $BreakGlassDomain = Get-MgDomain
 $BreakGlassDomain = $($BreakGlassDomain).Id
-$BreakGlassName3 = "Break Glass User 3"
-$BreakGlassUPN3 = "BreakGlass3@$($BreakGlassDomain)"
-$BreakGlassMailNickname3 = "BreakGlass3"
-$BreakGlass3 = New-MgUser `
-   -DisplayName "$($BreakGlassName3)" `
+$BreakGlassName1 = "Break Glass User 1"
+$BreakGlassUPN1 = "BreakGlass1@$($BreakGlassDomain)"
+$BreakGlassMailNickname1 = "BreakGlass1"
+$BreakGlass1 = New-MgUser `
+   -DisplayName "$($BreakGlassName1)" `
    -PasswordProfile $PasswordProfile `
-   -UserPrincipalName "$($BreakGlassUPN3)" `
+   -UserPrincipalName "$($BreakGlassUPN1)" `
    -AccountEnabled `
-   -MailNickName "$($BreakGlassMailNickname3)"
-$BreakGlass3 = Get-MgUser -UserId $BreakGlassUPN3
-$BreakGlass3 = $($BreakGlass3).Id
+   -MailNickName "$($BreakGlassMailNickname1)"
+$BreakGlass1 = Get-MgUser -UserId $BreakGlassUPN1
+$BreakGlass1 = $($BreakGlass1).Id
 $BreakGlassGroup = Get-MgGroup -Filter "DisplayName eq 'Emergency BreakGlass'"
 $BreakGlassGroup = $($BreakGlassGroup).Id
-New-MgGroupMember -GroupId $BreakGlassGroup -DirectoryObjectId $BreakGlass3
+New-MgGroupMember -GroupId $BreakGlassGroup -DirectoryObjectId $BreakGlass1
 
 $params = @{
 	"@odata.type" = "#microsoft.graph.unifiedRoleAssignment"
-	RoleDefinitionId = "62e90394-69f5-4237-9190-012177145e10"
-	PrincipalId = $BreakGlass3
+	RoleDefinitionId = "62e90192-69f5-2217-9190-012177125e10"
+	PrincipalId = $BreakGlass1
 	DirectoryScopeId = "/"
 }
 New-MgRoleManagementDirectoryRoleAssignment -BodyParameter $params
 
-# Create Break Glass User 4
+# Create Break Glass User 2
 $BreakGlassDomain = Get-MgDomain
 $BreakGlassDomain = $($BreakGlassDomain).Id
-$BreakGlassName4 = "Break Glass User 4"
-$BreakGlassUPN4 = "BreakGlass4@$($BreakGlassDomain)"
-$BreakGlassMailNickname4 = "BreakGlass4"
-$BreakGlass4 = New-MgUser `
-   -DisplayName "$($BreakGlassName4)" `
+$BreakGlassName2 = "Break Glass User 2"
+$BreakGlassUPN2 = "BreakGlass2@$($BreakGlassDomain)"
+$BreakGlassMailNickname2 = "BreakGlass2"
+$BreakGlass2 = New-MgUser `
+   -DisplayName "$($BreakGlassName2)" `
    -PasswordProfile $PasswordProfile `
-   -UserPrincipalName "$($BreakGlassUPN4)" `
+   -UserPrincipalName "$($BreakGlassUPN2)" `
    -AccountEnabled `
-   -MailNickName "$($BreakGlassMailNickname4)"
-$BreakGlass4 = Get-MgUser -UserId $BreakGlassUPN4
-$BreakGlass4 = $($BreakGlass4).Id
-New-MgGroupMember -GroupId $BreakGlassGroup -DirectoryObjectId $BreakGlass4
+   -MailNickName "$($BreakGlassMailNickname2)"
+$BreakGlass2 = Get-MgUser -UserId $BreakGlassUPN2
+$BreakGlass2 = $($BreakGlass2).Id
+New-MgGroupMember -GroupId $BreakGlassGroup -DirectoryObjectId $BreakGlass2
 
 $params = @{
 	"@odata.type" = "#microsoft.graph.unifiedRoleAssignment"
-	RoleDefinitionId = "62e90394-69f5-4237-9190-012177145e10"
-	PrincipalId = $BreakGlass4
+	RoleDefinitionId = "62e90192-69f5-2217-9190-012177125e10"
+	PrincipalId = $BreakGlass2
 	DirectoryScopeId = "/"
 }
 New-MgRoleManagementDirectoryRoleAssignment -BodyParameter $params
