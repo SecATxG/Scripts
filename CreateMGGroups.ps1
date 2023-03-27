@@ -1,124 +1,121 @@
-Install-Module AzureADPreview -AllowClobber -Force
-Remove-Module AzureAD
-Import-Module AzureADPreview
-Connect-AzureAD
+Connect-MgGraph -Scopes "DeviceManagementApps.ReadWrite.All","DeviceManagementConfiguration.ReadWrite.All","DeviceManagementManagedDevices.ReadWrite.All","DeviceManagementServiceConfig.ReadWrite.All","Directory.ReadWrite.All","User.ReadWrite.All","Directory.Read.All","Domain.Read.All","Domain.ReadWrite.All","Group.ReadWrite.All"
 
 # Create Security Group for Secure Workstation Admins
 $SecureGroupName1 = "Secure Workstation Admins"
 $SecureGroupMailName1 = "SecureWorkstationsAdmins"
-$SecureGroup1 = New-AzureADMSGroup `
+$SecureGroup1 = New-MgGroup `
    -Description "$($SecureGroupName1)" `
    -DisplayName "$($SecureGroupName1)" `
-   -MailEnabled $false `
-   -SecurityEnabled $true `
+   -MailEnabled:$False `
+   -SecurityEnabled `
    -MailNickname "$($SecureGroupMailName1)"
 
 # Create Security Group for Enterprise Workstation Admins
 $EnterpriseGroupName1 = "Enterprise Workstation Admins"
 $EnterpriseGroupMailName1 = "EnterpriseWorkstationsAdmins"
-$EnterpriseGroup1 = New-AzureADMSGroup `
+$EnterpriseGroup1 = New-MgGroup `
    -Description "$($EnterpriseGroupName1)" `
    -DisplayName "$($EnterpriseGroupName1)" `
-   -MailEnabled $false `
-   -SecurityEnabled $true `
+   -MailEnabled:$False `
+   -SecurityEnabled `
    -MailNickname "$($EnterpriseGroupMailName1)"
 
 # Create Dynamic Security Group for Secure Workstation Users
 $SecureGroupName2 = "Secure Workstation Users"
 $SecureGroupMailName2 = "SecureWorkstationsUsers"
 $SecureGroupQuery2 = '(user.userPrincipalName -startsWith "AZADM-")'
-$SecureGroup2 = New-AzureADMSGroup `
+$SecureGroup2 = New-MgGroup `
    -Description "$($SecureGroupName2)" `
    -DisplayName "$($SecureGroupName2)" `
-   -MailEnabled $false `
-   -SecurityEnabled $true `
+   -MailEnabled:$False `
+   -SecurityEnabled `
    -MailNickname "$($SecureGroupMailName2)" `
    -GroupTypes "DynamicMembership" `
    -MembershipRule "$($SecureGroupQuery2)" `
    -MembershipRuleProcessingState "Paused"
-Set-AzureADMSGroup -Id $SecureGroup2.Id -MembershipRuleProcessingState "On"
+Update-MgGroup -GroupId $SecureGroup2.Id -MembershipRuleProcessingState "On"
 
 # Create Security Group for Enterprise Workstation Users
 $EnterpriseGroupName2 = "Enterprise Workstation Users"
 $EnterpriseGroupMailName2 = "EnterpriseWorkstationsUsers"
-$EnterpriseGroup2 = New-AzureADMSGroup `
+$EnterpriseGroup2 = New-MgGroup `
    -Description "$($EnterpriseGroupName2)" `
    -DisplayName "$($EnterpriseGroupName2)" `
-   -MailEnabled $false `
-   -SecurityEnabled $true `
+   -MailEnabled:$False `
+   -SecurityEnabled `
    -MailNickname "$($EnterpriseGroupMailName2)"
 
 # Create Security Group for Emergency BreakGlass Accounts
 $SecureGroupName3 = "Emergency BreakGlass"
 $SecureGroupMailName3 = "EmergencyBreakGlass"
-$SecureGroup3 = New-AzureADMSGroup `
+$SecureGroup3 = New-MgGroup `
    -Description "$($SecureGroupName3)" `
    -DisplayName "$($SecureGroupName3)" `
-   -MailEnabled $false `
-   -SecurityEnabled $true `
+   -MailEnabled:$False `
+   -SecurityEnabled `
    -MailNickname "$($SecureGroupMailName3)"
 
 # Create Dynamic Security Group for Secure Workstation Devices
 $SecureGroupName4 = "Secure Workstation Devices"
 $SecureGroupMailName4 = "SecureWorkstationsDevices"
 $SecureGroupQuery4 = '(device.devicePhysicalIds -any _ -contains "[OrderID]:PAW")'
-$SecureDevices1 = New-AzureADMSGroup `
+$SecureDevices1 = New-MgGroup `
    -Description "$($SecureGroupName4)" `
    -DisplayName "$($SecureGroupName4)" `
-   -MailEnabled $false `
-   -SecurityEnabled $true `
+   -MailEnabled:$False `
+   -SecurityEnabled `
    -MailNickname "$($SecureGroupMailName4)" `
    -GroupTypes "DynamicMembership" `
    -MembershipRule "$($SecureGroupQuery4)" `
    -MembershipRuleProcessingState "Paused"
-Set-AzureADMSGroup -Id $SecureDevices1.Id -MembershipRuleProcessingState "On"
+Update-MgGroup -GroupId $SecureDevices1.Id -MembershipRuleProcessingState "On"
 
 # Create Dynamic Security Group for Enterprise Workstation Devices
 $EnterpriseGroupName4 = "Enterprise Workstation Devices"
 $EnterpriseGroupMailName4 = "EnterpriseWorkstationsDevices"
 $EnterpriseGroupQuery4 = '(device.devicePhysicalIds -any _ -contains "[OrderID]:EUD")'
-$EnterpriseDevices1 = New-AzureADMSGroup `
+$EnterpriseDevices1 = New-MgGroup `
    -Description "$($EnterpriseGroupName4)" `
    -DisplayName "$($EnterpriseGroupName4)" `
-   -MailEnabled $false `
-   -SecurityEnabled $true `
+   -MailEnabled:$False `
+   -SecurityEnabled `
    -MailNickname "$($EnterpriseGroupMailName4)" `
    -GroupTypes "DynamicMembership" `
    -MembershipRule "$($EnterpriseGroupQuery4)" `
    -MembershipRuleProcessingState "Paused"
-Set-AzureADMSGroup -Id $EnterpriseDevices1.Id -MembershipRuleProcessingState "On"
+Update-MgGroup -GroupId $EnterpriseDevices1.Id -MembershipRuleProcessingState "On"
 
 # Create Security Group for PAW Intune Administrators
 $SecureGroupName5 = "PAW Intune Administrators"
 $SecureGroupMailName5 = "PAWIntuneAdministrators"
-$SecureGroup5 = New-AzureADMSGroup `
+$SecureGroup5 = New-MgGroup `
    -Description "$($SecureGroupName5)" `
    -DisplayName "$($SecureGroupName5)" `
-   -MailEnabled $false `
-   -SecurityEnabled $true `
+   -MailEnabled:$False `
+   -SecurityEnabled `
    -MailNickname "$($SecureGroupMailName5)"
 
 # Create Security Group for EUD Intune Administrators
 $EnterpriseGroupName5 = "EUD Intune Administrators"
 $EnterpriseGroupMailName5 = "EUDIntuneAdministrators"
-$EnterpriseGroup5 = New-AzureADMSGroup `
+$EnterpriseGroup5 = New-MgGroup `
    -Description "$($EnterpriseGroupName5)" `
    -DisplayName "$($EnterpriseGroupName5)" `
-   -MailEnabled $false `
-   -SecurityEnabled $true `
+   -MailEnabled:$False `
+   -SecurityEnabled `
    -MailNickname "$($EnterpriseGroupMailName5)"
 
 # Create Dynamic Security Group for AADConnect Sync Accounts
 $SecureGroupName6 = "AADConnect Sync Accounts"
 $SecureGroupMailName6 = "AADConnectSyncAccounts"
 $SecureGroupQuery6 = '(user.userPrincipalName -startsWith "Sync_")'
-$SecureGroup6 = New-AzureADMSGroup `
+$SecureGroup6 = New-MgGroup `
    -Description "$($SecureGroupName6)" `
    -DisplayName "$($SecureGroupName6)" `
-   -MailEnabled $false `
-   -SecurityEnabled $true `
+   -MailEnabled:$False `
+   -SecurityEnabled `
    -MailNickname "$($SecureGroupMailName6)" `
    -GroupTypes "DynamicMembership" `
    -MembershipRule "$($SecureGroupQuery6)" `
    -MembershipRuleProcessingState "Paused"
-Set-AzureADMSGroup -Id $SecureGroup6.Id -MembershipRuleProcessingState "On"
+Update-MgGroup -GroupId $SecureGroup6.Id -MembershipRuleProcessingState "On"
