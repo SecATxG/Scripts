@@ -336,10 +336,16 @@ New-MgIdentityConditionalAccessPolicy @Params
 
 #Create Conditional Access policy "PAW - Require compliant or hybrid Azure AD joined device for admins"
 $conditions = @{
-        userRiskLevels = @(
-        "high"
-    );
-        Applications = @{
+        platforms = @{
+            includePlatforms = 'All'
+            excludePlatforms = @(
+                "android";
+                "iOS";
+                "macOS";
+                "linux"
+            )
+        }
+            Applications = @{
         includeApplications = 'All'
     };
         Users = @{
@@ -370,7 +376,8 @@ $conditions = @{
 }
 $grantcontrols = @{
     BuiltInControls = @(
-        'block'
+        "compliantDevice";
+        "domainJoinedDevice"
     )
     Operator = 'OR'
 }
