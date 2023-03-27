@@ -45,16 +45,6 @@ $EnterpriseGroup2 = New-MgGroup `
    -SecurityEnabled `
    -MailNickname "$($EnterpriseGroupMailName2)"
 
-# Create Security Group for Emergency BreakGlass Accounts
-$SecureGroupName3 = "Emergency BreakGlass"
-$SecureGroupMailName3 = "EmergencyBreakGlass"
-$SecureGroup3 = New-MgGroup `
-   -Description "$($SecureGroupName3)" `
-   -DisplayName "$($SecureGroupName3)" `
-   -MailEnabled:$False `
-   -SecurityEnabled `
-   -MailNickname "$($SecureGroupMailName3)"
-
 # Create Dynamic Security Group for Secure Workstation Devices
 $SecureGroupName4 = "Secure Workstation Devices"
 $SecureGroupMailName4 = "SecureWorkstationsDevices"
