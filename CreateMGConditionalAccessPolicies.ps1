@@ -9,6 +9,18 @@ $BreakGlassUser2 = $($BreakGlassUser2).Id
 $SecureUsersGroup1 = $($SecureUsersGroup1).Id
 $SecureUsersGroup2 = $($SecureUsersGroup2).Id
 
+#Create Named Location "Trusted Locations - Switzerland"
+$params = @{
+"@odata.type" = "#microsoft.graph.countryNamedLocation"
+DisplayName = "Trusted Locations - Switzerland"
+CountriesAndRegions = @(
+    "CH"
+)
+IncludeUnknownCountriesAndRegions = $true
+}
+
+$TrustedLocation1 = New-MgIdentityConditionalAccessNamedLocation -BodyParameter $params
+$TrustedLocation1 = $($TrustedLocation1).id
 
 #Create Conditional Access policy "ALL - Require multifactor authentication for all users"
 $conditions = @{
@@ -139,6 +151,42 @@ $Params = @{
     State = "EnabledForReportingButNotEnforced";
     Conditions = $conditions;
     SessionControls = $sessioncontrols;  
+}
+New-MgIdentityConditionalAccessPolicy @Params
+
+#Create Conditional Access policy "ALL - Securing security info registration"
+$conditions = @{
+        Applications = @{
+            includeUserActions =  "urn:user:registersecurityinfo"
+    };
+        Users = @{
+        excludeUsers = @(
+            "$($BreakGlassUser1)";
+            "$($BreakGlassUser2)";
+            "$($SecureUsersGroup1)";
+        )
+        includeUsers = "All"
+        excludeRoles = @(
+                "62e90394-69f5-4237-9190-012177145e10"
+        )
+    };
+        locations = @{
+            includeLocations = "All"
+            excludeLocations = @(
+                "$($TrustedLocation1)"
+            )
+    };
+}
+    $grantcontrols = @{
+        BuiltInControls = @('mfa'); 
+        Operator = 'OR'
+}
+    $Params = @{
+        DisplayName = "ALL - Securing security info registration";
+        State = "EnabledForReportingButNotEnforced";
+        Conditions = $conditions;
+        GrantControls = $grantcontrols;
+    
 }
 New-MgIdentityConditionalAccessPolicy @Params
 
