@@ -36,7 +36,7 @@ New-MgGroupMember -GroupId $BreakGlassGroup -DirectoryObjectId $BreakGlass1
 
 $params = @{
 	"@odata.type" = "#microsoft.graph.unifiedRoleAssignment"
-	RoleDefinitionId = "62e90192-69f5-2217-9190-012177125e10"
+	RoleDefinitionId = "62e90394-69f5-4237-9190-012177145e10"
 	PrincipalId = $BreakGlass1
 	DirectoryScopeId = "/"
 }
@@ -60,7 +60,7 @@ New-MgGroupMember -GroupId $BreakGlassGroup -DirectoryObjectId $BreakGlass2
 
 $params = @{
 	"@odata.type" = "#microsoft.graph.unifiedRoleAssignment"
-	RoleDefinitionId = "62e90192-69f5-2217-9190-012177125e10"
+	RoleDefinitionId = "62e90394-69f5-4237-9190-012177145e10"
 	PrincipalId = $BreakGlass2
 	DirectoryScopeId = "/"
 }
